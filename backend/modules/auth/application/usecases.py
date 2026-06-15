@@ -1,9 +1,6 @@
 from fastapi import HTTPException
 
-from core.security import (
-    verify_password,
-    create_access_token,
-)
+from core.security import verify_password, create_access_token
 
 
 class LoginUseCase:
@@ -12,9 +9,7 @@ class LoginUseCase:
         self.user_repo = user_repo
 
     def execute(self, email, password):
-
         user = self.user_repo.get_by_email(email)
-
         if not user:
             raise HTTPException(401)
 

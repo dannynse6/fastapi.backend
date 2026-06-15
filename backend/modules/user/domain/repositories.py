@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from entities import User
+from .entities import User
 
 
 class UserRepository(ABC):

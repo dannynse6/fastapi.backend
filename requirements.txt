@@ -14,5 +14,5 @@ uvicorn==0.48.0
 alembic==1.18.4
 mysql-connector-python==9.7.0
 python-jose
-passlib
-bcrypt
+passlib==1.7.4
+bcrypt==4.0.1

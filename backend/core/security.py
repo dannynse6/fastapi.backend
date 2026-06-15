@@ -12,6 +12,9 @@ pwd_context = CryptContext(
 
 
 def hash_password(password: str):
+    if len(password.encode("utf-8")) > 72:
+        raise ValueError("Password cannot be longer than 72 bytes")
+
     return pwd_context.hash(password)
 
 

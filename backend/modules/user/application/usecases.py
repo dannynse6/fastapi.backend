@@ -1,5 +1,5 @@
 from fastapi import HTTPException, status
-from core.security import verify_password, create_access_token
+from core.security import verify_password, create_access_token, hash_password
 from modules.user.domain.repositories import UserRepository
 
 
@@ -35,4 +35,25 @@ class LoginUseCase:
                 "email": user.email,
                 "role": user.role,
             }
+        )
+
+class CreateUserUseCase:
+
+    def __init__(self, user_repo):
+        self.user_repo = user_repo
+
+    def execute(self, email: str, password: str, role: str = "USER"):
+        existing_user = self.user_repo.get_by_email(email)
+        if existing_user:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Email already exists",
+            )
+
+        hashed_password = hash_password(password)
+
+        return self.user_repo.create(
+            email=email,
+            hashed_password=hashed_password,
+            role=role,
         )
