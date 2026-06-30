@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 from database.session import get_db
 from core.dependencies import get_current_user, require_roles
-from core.dependencies import CurrentUser, DBSession
+from core.dependencies import CurrentUser, DBSession, AdminUser
 from ..application.schemas import CreateUserRequest, UserResponse
 from ..infrastructure.repositories import SQLAlchemyUserRepository
 from ..application.usecases import CreateUserUseCase
@@ -18,7 +18,7 @@ def me(current_user: CurrentUser):
 
 
 @router.get("")
-def list_users(current_user: CurrentUser):
+def list_users(current_user: AdminUser):
 	return {
 		"message": "Admin only"
 	}

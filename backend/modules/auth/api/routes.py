@@ -1,5 +1,4 @@
 from fastapi import APIRouter
-from sqlalchemy.orm import Session
 from modules.auth.application.schemas import LoginRequest, TokenResponse
 from modules.auth.application.usecases import LoginUseCase
 from modules.user.infrastructure.repositories import SQLAlchemyUserRepository
