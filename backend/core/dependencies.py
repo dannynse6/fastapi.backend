@@ -1,45 +1,30 @@
+from typing import Annotated, Any
 from fastapi import Depends
-from fastapi import HTTPException
+from fastapi.security import OAuth2PasswordRequestForm
+from sqlalchemy.orm import Session
+from database.session import get_db
+from .security import get_current_user, require_roles
 
-from jose import jwt
+# Database
+DBSession = Annotated[
+    Session,
+    Depends(get_db),
+]
 
-from fastapi.security import OAuth2PasswordBearer
+# OAuth2 Login Form
+LoginForm = Annotated[
+    OAuth2PasswordRequestForm,
+    Depends(),
+]
 
-from core.config import settings
+# Current User
+CurrentUser = Annotated[
+    dict[str, Any],
+    Depends(get_current_user),
+]
 
-oauth2_scheme = OAuth2PasswordBearer(
-    tokenUrl="/auth/login"
-)
-
-
-def get_current_user(
-    token: str = Depends(oauth2_scheme),
-):
-    try:
-        payload = jwt.decode(
-            token,
-            settings.JWT_SECRET,
-            algorithms=[settings.JWT_ALGORITHM],
-        )
-
-        return payload
-
-    except Exception:
-        raise HTTPException(401)
-
-
-def require_roles(*roles):
-    def checker(
-        current_user=Depends(
-            get_current_user
-        ),
-    ):
-        if current_user["role"] not in roles:
-            raise HTTPException(
-                status_code=403,
-                detail="Forbidden",
-            )
-
-        return current_user
-
-    return checker
+# Roles
+AdminUser = Annotated[
+    dict[str, Any],
+    Depends(require_roles("admin")),
+]
